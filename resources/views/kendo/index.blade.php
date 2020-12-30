@@ -373,20 +373,19 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" href="styles/kendo.common.min.css" />
-    <link rel="stylesheet" href="styles/kendo.default.min.css" />
-    <link rel="stylesheet" href="styles/kendo.default.mobile.min.css" />
+    <link rel="stylesheet" href="styles/kendo.common.min.css"/>
+    <link rel="stylesheet" href="styles/kendo.default.min.css"/>
+    <link rel="stylesheet" href="styles/kendo.default.mobile.min.css"/>
 
     <script src="js/jquery.min.js"></script>
-    
-    
+
+
     <script src="js/kendo.all.min.js"></script>
-    
-    
+
 
 </head>
 <body>
-    <div id="example">
+<div id="example">
     <div id="toolbar"></div>
 
     <div id="grid"></div>
@@ -395,199 +394,180 @@
 
         function onChange(arg) {
 
-            console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
-            selectedProducts = this.selectedKeyNames();
+           
 
         }
 
-        $(document).ready(function() {
-            
+        $(document).ready(function () {
 
-        var dataSource = new kendo.data.DataSource({
-    
-             transport: {
-                        read: {
-                            url: function(options) {
-                                      console.log("yay we did it");
-                                    return "/data-details";
-                                },
-                            dataType: "json"
+
+            var dataSource = new kendo.data.DataSource({
+
+                transport: {
+                    read: {
+                        url: function (options) {
+                            return "/data-details";
                         },
-                        destroy: {
-                            url:  "/order/destroy",
-                            dataType: "json",
-                            
-                        },
-                        parameterMap: function(data, type) {
-                        console.log(type);
+                        dataType: "json"
+                    },
+                    destroy: {
+                        url: "/order/destroy",
+                        dataType: "json",
+
+                    },
+                    parameterMap: function (data, type) {
                         if (type == "destroy") {
-
-                            let idTobeDeleted = data.id;
-
                             // send the destroyed data items as the "models" service parameter encoded in JSON
-                            return { models: kendo.stringify(idTobeDeleted) }
-                        }
-                        },
-                        
-                    },
-                    schema: {
-                        model: {
-                            id: "id",
-                            fields: {
-                                
-                                id: { editable: false },
-                                customer_seq: { type: "number" },
-                                customer_name: { type: "string" },
-                                type: { type: "string" },
-                                date: { type: "date" },
-                                delivery_date: { type: "date" },
-                                express_name: { type: "string" },
-                                invoice_num: { type: "number" },
-                                pack_num: { type: "number" },
-                                invoice_to: { type: "string" },
-                                order_num: { type: "number" },
-                                order_detail:{type:""},
-                                order_quantity: { type: "number" },
-                                
-                            }
+                            return {models: kendo.stringify(data.id)}
                         }
 
                     },
-                                                    // schema: {
-                                                    //     model: {
-                                                    //         fields: {
-                                                                
-                                                    //             id: { type: "number" },
-                                                    //             customer_seq: { type: "number" },
-                                                    //             customer_name: { type: "string" },
-                                                    //             type: { type: "string" },
-                                                    //             date: { type: "date" },
-                                                    //             delivery_date: { type: "date" },
-                                                    //             express_name: { type: "string" },
-                                                    //             invoice_num: { type: "number" },
-                                                    //             pack_num: { type: "number" },
-                                                    //             invoice_to: { type: "string" },
-                                                    //             order_num: { type: "number" },
-                                                    //             order_detail:{type:""},
-                                                    //             order_quantity: { type: "number" },
-                                                                
-                                                    //         }
-                                                    //     }
-                                                    // },
-                    pageSize: 20,
-                    serverPaging: false,
-                    serverFiltering: true,
-                    serverSorting: true
+
+                },
+
+                schema: {
+                    model: {
+                        id: "id",
+                        fields: {
+
+                            id: {editable: false},
+                            customer_seq: {type: "number"},
+                            customer_name: {type: "string"},
+                            type: {type: "string"},
+                            date: {type: "date"},
+                            delivery_date: {type: "date"},
+                            express_name: {type: "string"},
+                            invoice_num: {type: "number"},
+                            pack_num: {type: "number"},
+                            invoice_to: {type: "string"},
+                            order_num: {type: "number"},
+                            order_detail: {type: ""},
+                            order_quantity: {type: "number"},
+
+                        }
+                    }
+
+                },
+                pageSize: 20,
+                serverPaging: false,
+                serverFiltering: true,
+                serverSorting: true
             })
 
 
-      
             $("#grid").kendoGrid({
-               
+
                 dataSource: dataSource,
                 height: 550,
                 filterable: true,
                 sortable: true,
                 pageable: true,
-                persistSelection: true,
-                // change: onChange,
+                persistSelection: false,
+                change: onChange,
                 detailInit: detailInit,
-                dataBound: function() {
+                dataBound: function () {
                     this.expandRow(this.tbody.find("tr.k-master-row").first());
                 },
                 columns: [
-                    { selectable: true, width: "50px" },
-                  
-                    {   field:"id",
-                        template: "<div class='order-id' data-id='#=id#'>#: id #</div>",
-                        dataSource: [ { id: this.id }]
+                    {selectable: true, width: "50px"},
 
-                    },{
-                        field:"customer_seq",
+                    {
+                        field: "id",
+                        template: "<div class='order-id' data-id='#=id#'>#: id #</div>",
+                        dataSource: [{id: this.id}]
+
                     }, {
-                        field:"customer_name",
-                    },{
-                        field:"id",
+                        field: "customer_seq",
+                    }, {
+                        field: "customer_name",
+                    }, {
+                        field: "id",
                         title: "id"
-    
+
                     },
-                     {
+                    {
                         field: "type",
                         title: "Type"
                     }, {
                         field: "date",
                         title: "Date",
                         format: "{0:MM/dd/yyyy}"
-                    },{
+                    }, {
                         field: "delivery_date",
                         format: "{0:MM/dd/yyyy}"
-                    },{
+                    }, {
                         field: "express_name",
                         title: "express_name",
-                        
-                    },{
+
+                    }, {
                         field: "invoice_num",
                         title: "invoice_num",
-                        
-                    },{
+
+                    }, {
                         field: "pack_num",
                         title: "pack_num",
-                        
-                    },{
+
+                    }, {
                         field: "invoice_to",
                         title: "invoice_to",
-                        
-                    },{
+
+                    }, {
                         field: "order_num",
                         title: "order_num",
-                        
-                    },{
+
+                    }, {
                         field: "order_quantity",
                         title: "order_quantity",
-                        
+
                     },
-                    { command: [ "edit", "destroy" ] }
+                    
 
                 ],
+                selectable: "multiple row",
+                persistSelection: false,
                 editable: true
-                
+
             });
+
+
             $("#toolbar").kendoToolBar({
-            items: [
-                { type: "button", id: "btn1", text: "Delete" },
-            ]
-          });
+                items: [
+                    {type: "button", id: "btn1", text: "Delete"},
+                ]
+            });
 
-             var toolbar = $("#toolbar").data("kendoToolBar");
+            var toolbar = $("#toolbar").data("kendoToolBar");
 
-            $('#btn1').on("click", function(){
-              
-                // console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
-                console.log(selectedProducts)
-                var products = dataSource.data();
-                console.log(products[0].id)
-                 // remove the first data item
-                 dataSource.remove(products[0]);
-                        // // send the destroyed data item to the remote service
-                        dataSource.sync();
-                // for(let i = 0 ; i < selectedProducts.length; i++ ){
-         
+            function deleteRows() {
 
-                 
-                 
-                 
-                // }
-              
-            })   
-            
+                var grid = $("#grid").data("kendoGrid");
+                var selectedItems = grid.selectedKeyNames();
+
+                selectedItems.forEach(function (x) {
+                    var item = grid.dataSource.get(+x);
+                    grid.dataSource.remove(item);
+                    grid.dataSource.sync();
+
+                    grid._selectedIds = {};
+                    grid.clearSelection();
+
+                });
+                grid.dataSource.read();
+
+            }
+
+            $('#btn1').on("click", function (e) {
+
+                deleteRows();
+
+            })
+
         });
 
-       
 
         function detailInit(e) {
             $("<div/>").appendTo(e.detailCell).kendoGrid({
                 dataSource: {
-                    type: "json",
                     transport: {
                         read: "/data-details"
                     },
@@ -595,74 +575,22 @@
                     serverSorting: false,
                     serverFiltering: false,
                     pageSize: 10,
-                    filter: { field: "order_detail", operator: "eq", value: e.data.order_detail}
+                    filter: {field: "order_detail", operator: "eq", value: e.data.order_detail}
                 },
                 scrollable: false,
                 sortable: true,
                 pageable: false,
                 columns: [
-                    
-                    { field: "order_detail", title:"order_detail", width: "110px"}
-                    
+
+                    {field: "order_detail", title: "order_detail", width: "110px"}
+
                 ]
             });
         }
 
-
-
-
-
-
-        // $("#grid").on("click", ".order-id", function() {
-        //     var $tr = $(this).closest("tr"),
-        //     grid = $("#grid").data("kendoGrid");
-
-        //     grid.removeRow($tr);
-
-        //     var id = $(this).closest('.order-id');
-        //     console.log("this is id");
-        //     console.log(id);
-        //     //ajax ..
-        //     // $.ajax (
-        //     //     {
-        //     //         url:"/order/destory" + id,
-        //     //         type: 'DELETE',
-        //     //         data: {
-        //     //             "id": id
-        //     //        }
-        //     //     }
-               
-        //     // )
-        // });
-
-
-        // function whenYourDeleteButtonIsClicked(){
-        //   var grid = $("#grid").data("test_yongmin");
-        //   $("#grid").find("input:checked").each(function(){
-        //         console.log($(this).closest('tr'))
-        //       //
-        //     //grid.removeRow($(this).closest('tr'));
-
-
-        //     // $.ajax({
-        //     //         url: "/order/destory",
-        //     //         method: "delete",
-        //     //         data: { 
-        //     //             id : value,
-        
-        //     //             "_token": "{{ csrf_token() }}"
-        //     //         }
-        //     //     });
-        //   })
-
-        //     grid.removeRow($(this).closest('tr'));
-        //   })
-        // }
     </script>
 </div>
 
-
-    
 
 </body>
 </html>
