@@ -451,7 +451,29 @@
                                 
                             }
                         }
+
                     },
+                                                    // schema: {
+                                                    //     model: {
+                                                    //         fields: {
+                                                                
+                                                    //             id: { type: "number" },
+                                                    //             customer_seq: { type: "number" },
+                                                    //             customer_name: { type: "string" },
+                                                    //             type: { type: "string" },
+                                                    //             date: { type: "date" },
+                                                    //             delivery_date: { type: "date" },
+                                                    //             express_name: { type: "string" },
+                                                    //             invoice_num: { type: "number" },
+                                                    //             pack_num: { type: "number" },
+                                                    //             invoice_to: { type: "string" },
+                                                    //             order_num: { type: "number" },
+                                                    //             order_detail:{type:""},
+                                                    //             order_quantity: { type: "number" },
+                                                                
+                                                    //         }
+                                                    //     }
+                                                    // },
                     pageSize: 20,
                     serverPaging: false,
                     serverFiltering: true,
@@ -468,7 +490,11 @@
                 sortable: true,
                 pageable: true,
                 persistSelection: true,
-                change: onChange,
+                // change: onChange,
+                detailInit: detailInit,
+                dataBound: function() {
+                    this.expandRow(this.tbody.find("tr.k-master-row").first());
+                },
                 columns: [
                     { selectable: true, width: "50px" },
                   
@@ -516,10 +542,6 @@
                         title: "order_num",
                         
                     },{
-                        field: "order_detail",
-                        title: "order_detail",
-                        
-                    },{
                         field: "order_quantity",
                         title: "order_quantity",
                         
@@ -528,6 +550,7 @@
 
                 ],
                 editable: true
+                
             });
             $("#toolbar").kendoToolBar({
             items: [
@@ -543,19 +566,49 @@
                 console.log(selectedProducts)
                 var products = dataSource.data();
                 console.log(products[0].id)
-                for(let i = 0 ; i < selectedProducts.length; i++ ){
-         
-
-                  // remove the first data item
-                        dataSource.remove(products[i]);
+                 // remove the first data item
+                 dataSource.remove(products[0]);
                         // // send the destroyed data item to the remote service
                         dataSource.sync();
+                // for(let i = 0 ; i < selectedProducts.length; i++ ){
+         
+
                  
                  
-                }
+                 
+                // }
               
             })   
+            
         });
+
+       
+
+        function detailInit(e) {
+            $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: "/data-details"
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false,
+                    pageSize: 10,
+                    filter: { field: "order_detail", operator: "eq", value: e.data.order_detail}
+                },
+                scrollable: false,
+                sortable: true,
+                pageable: false,
+                columns: [
+                    
+                    { field: "order_detail", title:"order_detail", width: "110px"}
+                    
+                ]
+            });
+        }
+
+
 
 
 
@@ -602,6 +655,8 @@
         //     //     });
         //   })
 
+        //     grid.removeRow($(this).closest('tr'));
+        //   })
         // }
     </script>
 </div>

@@ -10,7 +10,7 @@ use Redirect, Response;
 class OrderController extends Controller
 {
     public function orderData(){
-        $data = DB::table('test_yongmin')->limit(20)->get();
+        $data = DB::table('test_yongmin')->limit(2000)->get();
 
         return response()->json($data);
     }
