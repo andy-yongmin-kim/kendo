@@ -387,31 +387,55 @@
 </head>
 <body>
     <div id="example">
+    <div id="toolbar"></div>
+
     <div id="grid"></div>
     <script>
+        let selectedProducts = [];
 
         function onChange(arg) {
+
             console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+            selectedProducts = this.selectedKeyNames();
+
         }
 
         $(document).ready(function() {
             
-            $("#grid").kendoGrid({
-                toolbar: ["Delete"],
-                dataSource: {
-                    type: "json",
-                    transport: {
-                        read: "/data-details",
-                        destroy: {
-                            url:  "/order/destory",
+
+        var dataSource = new kendo.data.DataSource({
+    
+             transport: {
+                        read: {
+                            url: function(options) {
+                                      console.log("yay we did it");
+                                    return "/data-details";
+                                },
                             dataType: "json"
                         },
+                        destroy: {
+                            url:  "/order/destroy",
+                            dataType: "json",
+                            
+                        },
+                        parameterMap: function(data, type) {
+                        console.log(type);
+                        if (type == "destroy") {
+
+                            let idTobeDeleted = data.id;
+
+                            // send the destroyed data items as the "models" service parameter encoded in JSON
+                            return { models: kendo.stringify(idTobeDeleted) }
+                        }
+                        },
+                        
                     },
                     schema: {
                         model: {
+                            id: "id",
                             fields: {
                                 
-                                id: { type: "number" },
+                                id: { editable: false },
                                 customer_seq: { type: "number" },
                                 customer_name: { type: "string" },
                                 type: { type: "string" },
@@ -432,7 +456,13 @@
                     serverPaging: false,
                     serverFiltering: true,
                     serverSorting: true
-                },
+            })
+
+
+      
+            $("#grid").kendoGrid({
+               
+                dataSource: dataSource,
                 height: 550,
                 filterable: true,
                 sortable: true,
@@ -441,7 +471,7 @@
                 change: onChange,
                 columns: [
                     { selectable: true, width: "50px" },
-                    
+                  
                     {   field:"id",
                         template: "<div class='order-id' data-id='#=id#'>#: id #</div>",
                         dataSource: [ { id: this.id }]
@@ -450,7 +480,12 @@
                         field:"customer_seq",
                     }, {
                         field:"customer_name",
-                    }, {
+                    },{
+                        field:"id",
+                        title: "id"
+    
+                    },
+                     {
                         field: "type",
                         title: "Type"
                     }, {
@@ -494,8 +529,32 @@
                 ],
                 editable: true
             });
-            
-            
+            $("#toolbar").kendoToolBar({
+            items: [
+                { type: "button", id: "btn1", text: "Delete" },
+            ]
+          });
+
+             var toolbar = $("#toolbar").data("kendoToolBar");
+
+            $('#btn1').on("click", function(){
+              
+                // console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+                console.log(selectedProducts)
+                var products = dataSource.data();
+                console.log(products[0].id)
+                for(let i = 0 ; i < selectedProducts.length; i++ ){
+         
+
+                  // remove the first data item
+                        dataSource.remove(products[i]);
+                        // // send the destroyed data item to the remote service
+                        dataSource.sync();
+                 
+                 
+                }
+              
+            })   
         });
 
 
@@ -524,12 +583,26 @@
         // });
 
 
-        function whenYourDeleteButtonIsClicked(){
-          var grid = $("#grid").data("test_yongmin");
-          $("#grid").find("input:checked").each(function(){
-            grid.removeRow($(this).closest('tr'));
-          })
-        }
+        // function whenYourDeleteButtonIsClicked(){
+        //   var grid = $("#grid").data("test_yongmin");
+        //   $("#grid").find("input:checked").each(function(){
+        //         console.log($(this).closest('tr'))
+        //       //
+        //     //grid.removeRow($(this).closest('tr'));
+
+
+        //     // $.ajax({
+        //     //         url: "/order/destory",
+        //     //         method: "delete",
+        //     //         data: { 
+        //     //             id : value,
+        
+        //     //             "_token": "{{ csrf_token() }}"
+        //     //         }
+        //     //     });
+        //   })
+
+        // }
     </script>
 </div>
 

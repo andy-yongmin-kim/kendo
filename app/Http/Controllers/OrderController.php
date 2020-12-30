@@ -14,8 +14,12 @@ class OrderController extends Controller
 
         return response()->json($data);
     }
+    public function getDestroy(Request  $request) {
+        $id = $request->models;
+        $order = DB::table('test_yongmin')->where('id', $id)->delete();
 
-
+    }
+    
     public function destroy($id)
     {
         $order = DB::table('test_yongmin')->where('id', $id)->delete();

@@ -23,6 +23,8 @@ Route::get('/kendo', function () {
 
 
 Route::get('/data-details', [App\Http\Controllers\OrderController::class, 'orderData']);
-Route::delete('/order/destroy/{id}',  [App\Http\Controllers\OrderController::class, 'destroy'])->name('orderDestory');
+Route::get('/order/destroy',  [App\Http\Controllers\OrderController::class, 'getDestroy']);
+
+Route::get('/order/destroy/{id}',  [App\Http\Controllers\OrderController::class, 'destroy'])->name('orderDestory');
 
 
