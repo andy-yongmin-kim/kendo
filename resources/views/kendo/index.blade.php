@@ -390,9 +390,9 @@
     <div id="grid"></div>
     <script>
 
-        function onChange(arg) {
-            console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
-        }
+        // function onChange(arg) {
+        //     console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+        // }
 
         $(document).ready(function() {
             
@@ -402,34 +402,31 @@
                     type: "json",
                     transport: {
                         read: "/data-details",
-                        destroy: {
-                            url:  "/order/destory",
-                            dataType: "json"
-                        },
+                        
                     },
-                    schema: {
-                        model: {
-                            fields: {
-                                
-                                id: { type: "number" },
-                                customer_seq: { type: "number" },
-                                customer_name: { type: "string" },
-                                type: { type: "string" },
-                                date: { type: "date" },
-                                delivery_date: { type: "date" },
-                                express_name: { type: "string" },
-                                invoice_num: { type: "number" },
-                                pack_num: { type: "number" },
-                                invoice_to: { type: "string" },
-                                order_num: { type: "number" },
-                                order_detail:{type:""},
-                                order_quantity: { type: "number" },
-                                
-                            }
-                        }
-                    },
+                                                    // schema: {
+                                                    //     model: {
+                                                    //         fields: {
+                                                                
+                                                    //             id: { type: "number" },
+                                                    //             customer_seq: { type: "number" },
+                                                    //             customer_name: { type: "string" },
+                                                    //             type: { type: "string" },
+                                                    //             date: { type: "date" },
+                                                    //             delivery_date: { type: "date" },
+                                                    //             express_name: { type: "string" },
+                                                    //             invoice_num: { type: "number" },
+                                                    //             pack_num: { type: "number" },
+                                                    //             invoice_to: { type: "string" },
+                                                    //             order_num: { type: "number" },
+                                                    //             order_detail:{type:""},
+                                                    //             order_quantity: { type: "number" },
+                                                                
+                                                    //         }
+                                                    //     }
+                                                    // },
                     pageSize: 20,
-                    serverPaging: false,
+                    serverPaging: true,
                     serverFiltering: true,
                     serverSorting: true
                 },
@@ -438,7 +435,11 @@
                 sortable: true,
                 pageable: true,
                 persistSelection: true,
-                change: onChange,
+                // change: onChange,
+                detailInit: detailInit,
+                dataBound: function() {
+                    this.expandRow(this.tbody.find("tr.k-master-row").first());
+                },
                 columns: [
                     { selectable: true, width: "50px" },
                     
@@ -481,10 +482,6 @@
                         title: "order_num",
                         
                     },{
-                        field: "order_detail",
-                        title: "order_detail",
-                        
-                    },{
                         field: "order_quantity",
                         title: "order_quantity",
                         
@@ -493,10 +490,38 @@
 
                 ],
                 editable: true
+                
             });
             
-            
         });
+
+       
+
+        function detailInit(e) {
+            $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: "/data-details"
+                    },
+                    serverPaging: true,
+                    serverSorting: false,
+                    serverFiltering: false,
+                    pageSize: 10,
+                    filter: { field: "order_detail", operator: "eq", value: e.data.order_detail}
+                },
+                scrollable: false,
+                sortable: true,
+                pageable: false,
+                columns: [
+                    
+                    { field: "order_detail", title:"order_detail", width: "110px"}
+                    
+                ]
+            });
+        }
+
+
 
 
 
@@ -524,12 +549,12 @@
         // });
 
 
-        function whenYourDeleteButtonIsClicked(){
-          var grid = $("#grid").data("test_yongmin");
-          $("#grid").find("input:checked").each(function(){
-            grid.removeRow($(this).closest('tr'));
-          })
-        }
+        // function whenYourDeleteButtonIsClicked(){
+        //   var grid = $("#grid").data("test_yongmin");
+        //   $("#grid").find("input:checked").each(function(){
+        //     grid.removeRow($(this).closest('tr'));
+        //   })
+        // }
     </script>
 </div>
 
